@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZHCOIN Mining Game</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap">
     <style>
         body {
             font-family: 'VT323', monospace;
-            background: linear-gradient(45deg, #2045da, #ee0249);
+            background: linear-gradient(45deg, #2045da, #ee0249, #20cda6);
             background-size: 400% 400%;
             animation: gradientBackground 15s ease infinite;
             color: #ffffff;
@@ -22,8 +22,8 @@
         }
 
         @keyframes gradientBackground {
-            100% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
@@ -35,6 +35,7 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
             width: 80%;
             max-width: 600px;
+            font-family: 'Press Start 2P', cursive;
         }
 
         header h1 {
@@ -53,11 +54,12 @@
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.3s;
         }
 
         nav button:hover {
             background: #444;
+            transform: scale(1.1);
         }
 
         #mine-button {
@@ -74,6 +76,7 @@
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
             transition: transform 0.2s, box-shadow 0.2s;
+            animation: glow 1.5s infinite alternate;
         }
 
         #mine-button img:hover {
@@ -81,22 +84,20 @@
             box-shadow: 0 0 30px rgba(241, 196, 15, 1);
         }
 
-        #progress-bar-container {
-            background: #333;
+        #upgrade-button {
+            background: #ffffff;
+            color: #28a745;
+            border: none;
+            padding: 10px 20px;
             border-radius: 5px;
-            margin: 20px 0;
-            overflow: hidden;
-            height: 30px;
-            width: 100%;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            margin-top: 20px;
         }
 
-        #progress-bar {
-            background: linear-gradient(90deg, #f1c40f, #e67e22);
-            height: 100%;
-            width: 0;
-            text-align: center;
-            line-height: 30px;
-            transition: width 0.2s;
+        #upgrade-button:hover {
+            background: #444;
+            transform: scale(1.1);
         }
 
         .balance-display {
@@ -155,6 +156,31 @@
         #mine-button img {
             animation: glow 1.5s infinite alternate;
         }
+
+        .store-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #222;
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        .store-item button {
+            background: #ff0;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .theme-dark {
+            background: linear-gradient(45deg, #000000, #434343);
+        }
+
+        .theme-light {
+            background: linear-gradient(45deg, #ffffff, #dddddd);
+            color: #000000;
+        }
     </style>
 </head>
 <body>
@@ -167,11 +193,10 @@
             <button id="leaderboard-btn" aria-label="Leaderboard"><i class="fa fa-trophy"></i> ئەنجامەکان</button>
             <button id="profile-btn" aria-label="Profile"><i class="fa fa-user"></i> پرۆفایل</button>
             <button id="settings-btn" aria-label="Settings"><i class="fa fa-cog"></i> سێتینگ</button>
+            <button id="store-btn" aria-label="Store"><i class="fa fa-store"></i> فرۆشتن</button>
+            <button id="upgrade-btn" aria-label="Upgrades"><i class="fa fa-arrow-up"></i> بەهەربرخستن</button>
         </nav>
         <button id="mine-button"><img src="https://static.vecteezy.com/system/resources/previews/027/125/997/non_2x/antique-gold-coin-isolated-on-transparent-background-gold-coin-cut-out-generative-ai-png.png" alt="Coin"></button>
-        <div id="progress-bar-container">
-            <div id="progress-bar">0%</div>
-        </div>
         <div class="balance-display">بریی کۆین: <span id="balance">0</span> ZHCOIN</div>
         <div id="leaderboard" class="section">
             <h2>ئەنجام</h2>
@@ -181,8 +206,114 @@
                 <li>Player 3: 750 ZHCOIN</li>
             </ul>
         </div>
-        <div id="timer"></div>
-        <div id="daily-reward" class="section" aria-label="Claim Daily Reward">رۆژانەت وەرگرە کە برەکای ١٠٠</div>
+        <div id="store" class="section">
+            <h2>فرۆشتن</h2>
+            <!-- Add 18 items to the store -->
+            <div class="store-item">
+                <span>Item 1 - 100 ZHCOIN</span>
+                <button class="buy-btn" data-cost="100">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 2 - 200 ZHCOIN</span>
+                <button class="buy-btn" data-cost="200">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 3 - 300 ZHCOIN</span>
+                <button class="buy-btn" data-cost="300">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 4 - 400 ZHCOIN</span>
+                <button class="buy-btn" data-cost="400">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 5 - 500 ZHCOIN</span>
+                <button class="buy-btn" data-cost="500">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 6 - 600 ZHCOIN</span>
+                <button class="buy-btn" data-cost="600">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 7 - 700 ZHCOIN</span>
+                <button class="buy-btn" data-cost="700">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 8 - 800 ZHCOIN</span>
+                <button class="buy-btn" data-cost="800">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 9 - 900 ZHCOIN</span>
+                <button class="buy-btn" data-cost="900">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 10 - 1000 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1000">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 11 - 1100 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1100">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 12 - 1200 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1200">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 13 - 1300 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1300">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 14 - 1400 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1400">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 15 - 1500 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1500">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 16 - 1600 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1600">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 17 - 1700 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1700">Buy</button>
+            </div>
+            <div class="store-item">
+                <span>Item 18 - 1800 ZHCOIN</span>
+                <button class="buy-btn" data-cost="1800">Buy</button>
+            </div>
+        </div>
+        <div id="upgrades" class="section">
+            <h2>بەهەربرخستن</h2>
+            <!-- Add 7 upgrades to the upgrade section -->
+            <div class="store-item">
+                <span>Upgrade 1 - 500 ZHCOIN</span>
+                <button class="upgrade-btn" data-cost="500" data-increase="10">Upgrade</button>
+            </div>
+            <div class="store-item">
+                <span>Upgrade 2 - 1000 ZHCOIN</span>
+                <button class="upgrade-btn" data-cost="1000" data-increase="20">Upgrade</button>
+            </div>
+            <div class="store-item">
+                <span>Upgrade 3 - 1500 ZHCOIN</span>
+                <button class="upgrade-btn" data-cost="1500" data-increase="30">Upgrade</button>
+            </div>
+            <div class="store-item">
+                <span>Upgrade 4 - 2000 ZHCOIN</span>
+                <button class="upgrade-btn" data-cost="2000" data-increase="40">Upgrade</button>
+            </div>
+            <div class="store-item">
+                <span>Upgrade 5 - 2500 ZHCOIN</span>
+                <button class="upgrade-btn" data-cost="2500" data-increase="50">Upgrade</button>
+            </div>
+            <div class="store-item">
+                <span>Upgrade 6 - 3000 ZHCOIN</span>
+                <button class="upgrade-btn" data-cost="3000" data-increase="60">Upgrade</button>
+            </div>
+            <div class="store-item">
+                <span>Upgrade 7 - 3500 ZHCOIN</span>
+                <button class="upgrade-btn" data-cost="3500" data-increase="70">Upgrade</button>
+            </div>
+        </div>
         <div id="profile" class="section">
             <img src="avatar.png" alt="Avatar">
             <h3>ناو</h3>
@@ -190,16 +321,6 @@
             <input type="text" id="profile-name" placeholder="Enter new name">
             <label for="profile-photo">رسمی پرۆفایل دابنێ</label>
             <input type="file" id="profile-photo">
-        </div>
-        <div id="achievements" class="section">
-            <h2>مەرحەلاکان</h2>
-            <ul>
-                <li>یەکامین هەلکۆلین</li>
-                <li>100 ZHCOIN</li>
-                <li>1000 ZHCOIN</li>
-                <li>5000 ZHCOIN</li>
-                <li>10000 ZHCOIN</li>
-            </ul>
         </div>
         <div id="settings" class="section">
             <h2>سێتینگ</h2>
@@ -230,49 +351,43 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mineButton = document.getElementById('mine-button');
-            const progressBar = document.getElementById('progress-bar');
             const balanceDisplay = document.getElementById('balance');
             const leaderboardBtn = document.getElementById('leaderboard-btn');
             const profileBtn = document.getElementById('profile-btn');
             const settingsBtn = document.getElementById('settings-btn');
             const homeBtn = document.getElementById('home-btn');
+            const storeBtn = document.getElementById('store-btn');
+            const upgradeBtn = document.getElementById('upgrade-btn');
             const leaderboard = document.getElementById('leaderboard');
             const profile = document.getElementById('profile');
             const settings = document.getElementById('settings');
-            const dailyReward = document.getElementById('daily-reward');
-            const achievements = document.getElementById('achievements');
+            const store = document.getElementById('store');
+            const upgrades = document.getElementById('upgrades');
             const sections = document.querySelectorAll('.section');
             const gameContainer = document.getElementById('game-container');
             const profileNameInput = document.getElementById('profile-name');
             const profilePhotoInput = document.getElementById('profile-photo');
             const profileUsername = profile.querySelector('h3');
             const profileImage = profile.querySelector('img');
+            const buyButtons = document.querySelectorAll('.buy-btn');
+            const upgradeButtons = document.querySelectorAll('.upgrade-btn');
+            const backgroundMusicSlider = document.getElementById('background-music');
+            const soundEffectsSlider = document.getElementById('sound-effects');
+            const themeSelection = document.getElementById('theme-selection');
+            const notificationsCheckbox = document.getElementById('notifications');
+            const difficultySelection = document.getElementById('difficulty');
 
             let balance = 0;
-            let miningProgress = 0;
-            let miningAnimationFrame;
+            let coinValue = 10;
 
             function mine() {
-                miningProgress += 2;
-                progressBar.style.width = miningProgress + '%';
-                progressBar.innerText = miningProgress + '%';
-
-                if (miningProgress < 100) {
-                    miningAnimationFrame = requestAnimationFrame(mine);
-                } else {
-                    balance += 10; // Add mined coins to balance
-                    balanceDisplay.innerText = balance;
-                    progressBar.style.width = '0%';
-                    progressBar.innerText = '0%';
-                    miningProgress = 0;
-                    createFallingCoin();
-                    checkAchievements();
-                }
+                balance += coinValue;
+                balanceDisplay.innerText = balance;
+                createFallingCoin();
+                checkAchievements();
             }
 
             mineButton.addEventListener('click', () => {
-                cancelAnimationFrame(miningAnimationFrame);
-                miningProgress = 0;
                 mine();
             });
 
@@ -286,6 +401,14 @@
 
             settingsBtn.addEventListener('click', () => {
                 showSection(settings);
+            });
+
+            storeBtn.addEventListener('click', () => {
+                showSection(store);
+            });
+
+            upgradeBtn.addEventListener('click', () => {
+                showSection(upgrades);
             });
 
             homeBtn.addEventListener('click', () => {
@@ -338,6 +461,34 @@
                 }
             }
 
+            buyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const cost = parseInt(button.dataset.cost);
+                    if (balance >= cost) {
+                        balance -= cost;
+                        balanceDisplay.innerText = balance;
+                        alert('Purchase successful!');
+                    } else {
+                        alert('Not enough ZHCOIN!');
+                    }
+                });
+            });
+
+            upgradeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const cost = parseInt(button.dataset.cost);
+                    const increase = parseInt(button.dataset.increase);
+                    if (balance >= cost) {
+                        balance -= cost;
+                        coinValue += increase;
+                        balanceDisplay.innerText = balance;
+                        alert('Upgrade successful!');
+                    } else {
+                        alert('Not enough ZHCOIN!');
+                    }
+                });
+            });
+
             profileNameInput.addEventListener('change', () => {
                 profileUsername.textContent = profileNameInput.value;
             });
@@ -351,6 +502,43 @@
                     };
                     reader.readAsDataURL(file);
                 }
+            });
+
+            themeSelection.addEventListener('change', () => {
+                if (themeSelection.value === 'dark') {
+                    gameContainer.classList.add('theme-dark');
+                    gameContainer.classList.remove('theme-light');
+                } else if (themeSelection.value === 'light') {
+                    gameContainer.classList.add('theme-light');
+                    gameContainer.classList.remove('theme-dark');
+                } else {
+                    gameContainer.classList.remove('theme-dark');
+                    gameContainer.classList.remove('theme-light');
+                }
+            });
+
+            backgroundMusicSlider.addEventListener('input', () => {
+                const volume = backgroundMusicSlider.value;
+                // Add your background music logic here
+                console.log(`Background music volume: ${volume}`);
+            });
+
+            soundEffectsSlider.addEventListener('input', () => {
+                const volume = soundEffectsSlider.value;
+                // Add your sound effects logic here
+                console.log(`Sound effects volume: ${volume}`);
+            });
+
+            notificationsCheckbox.addEventListener('change', () => {
+                const isEnabled = notificationsCheckbox.checked;
+                // Add your notifications logic here
+                console.log(`Notifications enabled: ${isEnabled}`);
+            });
+
+            difficultySelection.addEventListener('change', () => {
+                const difficulty = difficultySelection.value;
+                // Add your difficulty level logic here
+                console.log(`Difficulty level: ${difficulty}`);
             });
         });
     </script>
