@@ -33,9 +33,36 @@
             margin-bottom: 20px;
         }
         h1 {
-            font-size: 2em;
-            color: #FFD700;
+            font-size: 2.5em;
+            color: #ff0000;
             text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700, 0 0 40px #FFD700, 0 0 50px #FFD700, 0 0 60px #FFD700, 0 0 70px #FFD700;
+            }
+            to {
+                text-shadow: 0 0 20px #FFD700, 0 0 30px #FFD700, 0 0 40px #FFD700, 0 0 50px #FFD700, 0 0 60px #FFD700, 0 0 70px #FFD700, 0 0 80px #FFD700;
+            }
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+        nav button {
+            background-color: #03a9f4;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 0 5px;
+        }
+        nav button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #03a9f4;
         }
         #mine-button {
             background-color: #ff9800;
@@ -57,25 +84,6 @@
         #mine-button:hover {
             transform: scale(1.1);
             box-shadow: 0 0 30px #ff9800;
-        }
-        #shop-area {
-            margin-top: 30px;
-        }
-        .upgrade-button {
-            display: block;
-            background-color: #03a9f4;
-            color: white;
-            border: none;
-            margin: 15px 0;
-            padding: 10px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .upgrade-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px #03a9f4;
         }
         .coin {
             width: 30px;
@@ -209,32 +217,33 @@
         #settings label {
             display: block;
             margin: 10px 0;
-            color: #fff;
         }
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-                height: auto;
-            }
-            #game-container {
-                width: 100%;
-                max-width: 100%;
-                padding: 15px;
-            }
-            h1 {
-                font-size: 1.5em;
-            }
-            #mine-button {
-                padding: 10px 20px;
-                font-size: 1.2em;
-            }
-            .upgrade-button {
-                padding: 8px;
-                font-size: 1em;
-            }
-            #profile img {
-                width: 40px;
-                height: 40px;
+        #settings input[type="checkbox"],
+        #settings input[type="range"],
+        #settings input[type="file"],
+        #settings input[type="text"],
+        #settings select {
+            margin-left: 10px;
+            font-size: 1em;
+        }
+        footer p {
+            font-size: 1em;
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+        }
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #FFD700;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle 0.5s linear;
+        }
+        @keyframes particle {
+            to {
+                opacity: 0;
+                transform: translateY(-50px);
             }
         }
     </style>
@@ -243,207 +252,274 @@
     <div id="game-container">
         <header>
             <h1>ZHCOIN Mining Game</h1>
-            <p>Click the button to mine ZHCOIN and catch the falling coins to collect more!</p>
         </header>
-        <main>
+        <nav>
+            <button onclick="showSection('game')">Game</button>
+            <button onclick="showSection('settings')">Settings</button>
+        </nav>
+        <section id="game-section">
             <div id="profile">
-                <img src="https://via.placeholder.com/50" alt="Avatar">
-                <h3 id="username">Player1</h3>
+                <img src="https://via.placeholder.com/50" id="profile-pic" alt="Profile Picture">
+                <h3 id="player-name">Player Name</h3>
             </div>
-            <div id="mining-area">
-                <p class="balance-display" id="zhcoin-balance">ZHCOIN Balance: 0</p>
-                <button id="mine-button">
-                    <i class="fas fa-hammer"></i> Mine ZHCOIN
-                </button>
-                <div id="progress-bar-container">
-                    <div id="progress-bar">0%</div>
-                </div>
-                <div id="level-display">Level: 1</div>
+            <button id="mine-button" onclick="mineCoin()">Mine ZHCOIN</button>
+            <div id="progress-bar-container">
+                <div id="progress-bar">0%</div>
             </div>
             <div id="shop-area">
-                <button class="upgrade-button" id="upgrade-pickaxe">Upgrade Pickaxe (Cost: 50 ZHCOIN)</button>
-                <button class="upgrade-button" id="buy-drill">Buy Drill (Cost: 100 ZHCOIN)</button>
-                <button class="upgrade-button" id="buy-auto-miner">Buy Auto Miner (Cost: 500 ZHCOIN)</button>
+                <button class="upgrade-button" onclick="buyUpgrade('clickPower')">Increase Click Power (10 ZHCOIN)</button>
+                <button class="upgrade-button" onclick="buyUpgrade('autoMiner')">Hire Auto Miner (50 ZHCOIN)</button>
+                <button class="upgrade-button" onclick="buyUpgrade('superMiner')">Hire Super Miner (200 ZHCOIN)</button>
             </div>
+            <div class="balance-display">ZHCOIN Balance: <span id="balance">0</span></div>
             <div id="leaderboard">
                 <h2>Leaderboard</h2>
-                <ul>
-                    <li>Player1 - 1000 ZHCOIN</li>
-                    <li>Player2 - 800 ZHCOIN</li>
-                    <li>Player3 - 600 ZHCOIN</li>
-                </ul>
+                <ul id="leaderboard-list"></ul>
             </div>
+            <div id="timer">Time Played: <span id="time-played">0</span> seconds</div>
+            <div id="daily-reward" onclick="claimDailyReward()">Claim Daily Reward</div>
             <div id="achievements">
                 <h2>Achievements</h2>
-                <ul>
-                    <li id="achievement1">First Mine - Earn your first ZHCOIN</li>
-                    <li id="achievement2">Coin Collector - Collect 100 ZHCOIN</li>
-                    <li id="achievement3">Mining Master - Reach level 5</li>
-                </ul>
+                <ul id="achievements-list"></ul>
             </div>
-            <div id="daily-reward">
-                <p>Claim your daily reward!</p>
-            </div>
-        </main>
-        <footer>
-            <p id="timer">Time Played: 00:00:00</p>
+        </section>
+        <section id="settings-section" style="display: none;">
             <div id="settings">
                 <h2>Settings</h2>
-                <label for="username-input">Change Username: <input type="text" id="username-input"></label>
-                <label for="theme-toggle">Dark Mode: <input type="checkbox" id="theme-toggle"></label>
+                <label>
+                    <input type="checkbox" id="music-toggle" onchange="toggleMusic()"> Enable Music
+                </label>
+                <label>
+                    <input type="range" id="volume-control" min="0" max="1" step="0.1" onchange="setVolume(this.value)"> Volume
+                </label>
+                <label>
+                    Change Profile Picture: 
+                    <input type="file" id="profile-pic-input" accept="image/*" onchange="changeProfilePic(event)">
+                </label>
+                <label>
+                    Change Username: 
+                    <input type="text" id="username-input" placeholder="Enter new username" onchange="changeUsername()">
+                </label>
+                <label>
+                    Select Difficulty:
+                    <select id="difficulty-select" onchange="changeDifficulty()">
+                        <option value="easy">Easy</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </label>
+                <label>
+                    Select Theme:
+                    <select id="theme-select" onchange="changeTheme()">
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                    </select>
+                </label>
+                <label>
+                    Enable Notifications:
+                    <input type="checkbox" id="notifications-toggle" onchange="toggleNotifications()">
+                </label>
             </div>
+        </section>
+        <footer>
+            <p>&copy; 2024 ZHCOIN Mining Game</p>
         </footer>
     </div>
+    <audio id="background-music" src="your-music-file.mp3" loop></audio>
     <script>
-        let zhcoinBalance = 0;
-        let level = 1;
-        let mineCount = 0;
-        let timePlayed = 0;
-        const zhcoinPerClick = 1;
-        const mineButton = document.getElementById('mine-button');
-        const zhcoinBalanceDisplay = document.getElementById('zhcoin-balance');
-        const progressBar = document.getElementById('progress-bar');
-        const levelDisplay = document.getElementById('level-display');
-        const upgradePickaxeButton = document.getElementById('upgrade-pickaxe');
-        const buyDrillButton = document.getElementById('buy-drill');
-        const buyAutoMinerButton = document.getElementById('buy-auto-miner');
-        const dailyReward = document.getElementById('daily-reward');
-        const usernameDisplay = document.getElementById('username');
-        const usernameInput = document.getElementById('username-input');
-        const themeToggle = document.getElementById('theme-toggle');
-        const timerDisplay = document.getElementById('timer');
-        const achievements = {
-            achievement1: false,
-            achievement2: false,
-            achievement3: false
-        };
+        let balance = 0;
+        let clickPower = 1;
+        let autoMiners = 0;
+        let superMiners = 0;
+        let musicEnabled = false;
+        let notificationsEnabled = false;
+        let music = document.getElementById('background-music');
+        let difficultyMultiplier = 1;
+        let achievements = [
+            { name: "First Coin", achieved: false },
+            { name: "100 Coins", achieved: false },
+            { name: "First Upgrade", achieved: false },
+            { name: "First Auto Miner", achieved: false },
+            { name: "First Super Miner", achieved: false },
+            // More achievements can be added here
+        ];
 
-        mineButton.addEventListener('click', mineZHCOIN);
-        upgradePickaxeButton.addEventListener('click', upgradePickaxe);
-        buyDrillButton.addEventListener('click', buyDrill);
-        buyAutoMinerButton.addEventListener('click', buyAutoMiner);
-        dailyReward.addEventListener('click', claimDailyReward);
-        usernameInput.addEventListener('change', changeUsername);
-        themeToggle.addEventListener('change', toggleTheme);
-
-        function mineZHCOIN() {
-            zhcoinBalance += zhcoinPerClick;
-            mineCount++;
-            updateDisplay();
+        function mineCoin() {
+            balance += clickPower * difficultyMultiplier;
+            document.getElementById('balance').textContent = balance;
+            updateProgressBar();
             checkAchievements();
-            createFallingCoin();
-            if (mineCount % 10 === 0) {
-                levelUp();
-            }
+            createParticles(event.clientX, event.clientY);
         }
 
-        function updateDisplay() {
-            zhcoinBalanceDisplay.innerText = `ZHCOIN Balance: ${zhcoinBalance}`;
-            progressBar.style.width = `${(mineCount % 10) * 10}%`;
-            progressBar.innerText = `${(mineCount % 10) * 10}%`;
-            levelDisplay.innerText = `Level: ${level}`;
-        }
-
-        function upgradePickaxe() {
-            if (zhcoinBalance >= 50) {
-                zhcoinBalance -= 50;
-                zhcoinPerClick += 1;
-                updateDisplay();
-            } else {
-                alert('Not enough ZHCOIN!');
-            }
-        }
-
-        function buyDrill() {
-            if (zhcoinBalance >= 100) {
-                zhcoinBalance -= 100;
-                zhcoinPerClick += 5;
-                updateDisplay();
-            } else {
-                alert('Not enough ZHCOIN!');
-            }
-        }
-
-        function buyAutoMiner() {
-            if (zhcoinBalance >= 500) {
-                zhcoinBalance -= 500;
+        function buyUpgrade(upgrade) {
+            if (upgrade === 'clickPower' && balance >= 10) {
+                clickPower++;
+                balance -= 10;
+            } else if (upgrade === 'autoMiner' && balance >= 50) {
+                autoMiners++;
+                balance -= 50;
                 setInterval(() => {
-                    zhcoinBalance += 1;
-                    updateDisplay();
+                    balance += difficultyMultiplier;
+                    document.getElementById('balance').textContent = balance;
                     checkAchievements();
                 }, 1000);
-                updateDisplay();
-            } else {
-                alert('Not enough ZHCOIN!');
+            } else if (upgrade === 'superMiner' && balance >= 200) {
+                superMiners++;
+                balance -= 200;
+                setInterval(() => {
+                    balance += 10 * difficultyMultiplier;
+                    document.getElementById('balance').textContent = balance;
+                    checkAchievements();
+                }, 1000);
             }
-        }
-
-        function levelUp() {
-            level++;
-            updateDisplay();
+            document.getElementById('balance').textContent = balance;
             checkAchievements();
         }
 
-        function createFallingCoin() {
-            const coin = document.createElement('div');
-            coin.classList.add('coin');
-            coin.style.left = `${Math.random() * 100}%`;
-            coin.addEventListener('click', () => {
-                zhcoinBalance += 10;
-                updateDisplay();
-                checkAchievements();
-                coin.remove();
-            });
-            document.body.appendChild(coin);
-            setTimeout(() => {
-                coin.remove();
-            }, 3000);
+        function updateProgressBar() {
+            let progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = Math.min(balance / 100, 1) * 100 + '%';
+            progressBar.textContent = balance + '%';
         }
 
         function claimDailyReward() {
-            zhcoinBalance += 50;
-            updateDisplay();
+            balance += 100 * difficultyMultiplier;
+            document.getElementById('balance').textContent = balance;
             checkAchievements();
         }
 
-        function changeUsername() {
-            const newUsername = usernameInput.value;
-            if (newUsername) {
-                usernameDisplay.innerText = newUsername;
+        function showSection(section) {
+            document.getElementById('game-section').style.display = section === 'game' ? 'block' : 'none';
+            document.getElementById('settings-section').style.display = section === 'settings' ? 'block' : 'none';
+        }
+
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            if (musicEnabled) {
+                music.play();
+            } else {
+                music.pause();
             }
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
+        function setVolume(volume) {
+            music.volume = volume;
         }
 
-        function updateTimer() {
-            timePlayed++;
-            const hours = String(Math.floor(timePlayed / 3600)).padStart(2, '0');
-            const minutes = String(Math.floor((timePlayed % 3600) / 60)).padStart(2, '0');
-            const seconds = String(timePlayed % 60).padStart(2, '0');
-            timerDisplay.innerText = `Time Played: ${hours}:${minutes}:${seconds}`;
+        function changeProfilePic(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('profile-pic').src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
         }
 
-        setInterval(updateTimer, 1000);
+        function changeUsername() {
+            const newUsername = document.getElementById('username-input').value;
+            document.getElementById('player-name').textContent = newUsername;
+        }
+
+        function changeDifficulty() {
+            const difficulty = document.getElementById('difficulty-select').value;
+            if (difficulty === 'easy') {
+                difficultyMultiplier = 1.5;
+            } else if (difficulty === 'normal') {
+                difficultyMultiplier = 1;
+            } else if (difficulty === 'hard') {
+                difficultyMultiplier = 0.5;
+            }
+        }
+
+        function changeTheme() {
+            const theme = document.getElementById('theme-select').value;
+            if (theme === 'dark') {
+                document.body.style.backgroundColor = '#0d0d0d';
+                document.body.style.color = '#ffffff';
+                document.getElementById('game-container').style.backgroundColor = '#1a1a1a';
+            } else if (theme === 'light') {
+                document.body.style.backgroundColor = '#ffffff';
+                document.body.style.color = '#000000';
+                document.getElementById('game-container').style.backgroundColor = '#f0f0f0';
+            }
+        }
+
+        function toggleNotifications() {
+            notificationsEnabled = !notificationsEnabled;
+            if (notificationsEnabled) {
+                // Implement notification logic here
+            }
+        }
 
         function checkAchievements() {
-            if (!achievements.achievement1 && zhcoinBalance >= 1) {
-                achievements.achievement1 = true;
-                document.getElementById('achievement1').style.color = '#FFD700';
-            }
-            if (!achievements.achievement2 && zhcoinBalance >= 100) {
-                achievements.achievement2 = true;
-                document.getElementById('achievement2').style.color = '#FFD700';
-            }
-            if (!achievements.achievement3 && level >= 5) {
-                achievements.achievement3 = true;
-                document.getElementById('achievement3').style.color = '#FFD700';
-            }
+            achievements.forEach(achievement => {
+                if (!achievement.achieved) {
+                    if (achievement.name === "First Coin" && balance > 0) {
+                        achievement.achieved = true;
+                        showAchievement(achievement.name);
+                    } else if (achievement.name === "100 Coins" && balance >= 100) {
+                        achievement.achieved = true;
+                        showAchievement(achievement.name);
+                    } else if (achievement.name === "First Upgrade" && clickPower > 1) {
+                        achievement.achieved = true;
+                        showAchievement(achievement.name);
+                    } else if (achievement.name === "First Auto Miner" && autoMiners > 0) {
+                        achievement.achieved = true;
+                        showAchievement(achievement.name);
+                    } else if (achievement.name === "First Super Miner" && superMiners > 0) {
+                        achievement.achieved = true;
+                        showAchievement(achievement.name);
+                    }
+                    // More achievement conditions can be added here
+                }
+            });
         }
+
+        function showAchievement(name) {
+            let achievementsList = document.getElementById('achievements-list');
+            let li = document.createElement('li');
+            li.textContent = name
+            achievementsList.appendChild(li);
+        }
+
+        function createParticles(x, y) {
+            const particles = document.createElement('div');
+            particles.classList.add('particle');
+            particles.style.left = x + 'px';
+            particles.style.top = y + 'px';
+            document.body.appendChild(particles);
+
+            particles.addEventListener('animationend', () => {
+                particles.remove();
+            });
+        }
+
+        setInterval(() => {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createParticles(x, y);
+        }, 500);
+
+        setInterval(() => {
+            let timePlayed = parseInt(document.getElementById('time-played').textContent);
+            timePlayed++;
+            document.getElementById('time-played').textContent = timePlayed;
+        }, 1000);
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
